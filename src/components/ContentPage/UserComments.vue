@@ -1,43 +1,46 @@
 <template>
-<div id="userComments" class="m-2">
-    <div class="container justify-content-center mt-5 border-left border-right">
-        <div class="d-flex justify-content-center pt-3 pb-2">
-            <input v-model="newComment" type="text" name="text" placeholder="+ AddComment" class="form-control addtxt">
-        </div>
-        <div v-if="show" class="d-flex justify-content-center pt-3 pb-2">
-            <input v-model="editCommentInput" type="text" name="text" placeholder="+ EditComment" class="form-control addtxt">
-            <button v-on:click="updateNewComment" class="btn btn-dark mb-3 ">Update</button>
-        </div>
-        <button v-on:click="postNewComment" class="d-flex justify-content-center py-2 btn btn-dark mb-3">Submit</button>
-        <div class="d-flex flex-column justify-content-center py-2">
+    <div id="userComments" class="m-2">
+        <div class="container justify-content-center mt-5 border-left border-right">
+            <div class="d-flex justify-content-center pt-3 pb-2">
+                <input v-model="newComment" type="text" name="text" placeholder="+ AddComment"
+                    class="form-control addtxt">
+            </div>
+            <div v-if="show" class="d-flex justify-content-center pt-3 pb-2">
+                <input v-model="editCommentInput" type="text" name="text" placeholder="+ EditComment"
+                    class="form-control addtxt">
+                <button v-on:click="updateNewComment" class="btn btn-dark mb-3 ">Update</button>
+            </div>
+            <button v-on:click="postNewComment"
+                class="d-flex justify-content-center py-2 btn btn-dark mb-3">Submit</button>
+            <div class="d-flex flex-column justify-content-center py-2">
 
-            <div v-for="data in dataComment" :key="data.id" class="second py-2 px-2 m-1">
+                <div v-for="data in dataComment" :key="data.id" class="second py-2 px-2 m-1">
 
-                <span class="text1">{{ data.body }}</span>
-                <div class="d-flex justify-content-between py-1 pt-2">
-                    <div>
-                        <div v-for="user in data.user" :key="user.id">
-                            <span class="text2">{{ user.username }}</span>
-                        </div>
+                    <span class="text1">{{ data.body }}</span>
+                    <div class="d-flex justify-content-between py-1 pt-2">
                         <div>
-                            <span class="text3">Upvote?</span>
-                            <span class="thumbup"><i class="fa fa-thumbs-o-up"></i></span>
-                            <span class="text4">3</span>
+                            <div v-for="user in data.user" :key="user.id">
+                                <span class="text2">{{ user.username }}</span>
+                            </div>
+                            <div>
+                                <span class="text3">Upvote?</span>
+                                <span class="thumbup"><i class="fa fa-thumbs-o-up"></i></span>
+                                <span class="text4">3</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <button v-on:click="editComment(data.id)" class="btn btn-dark mb-3 mx-2">Edit</button>
-                        <button v-on:click="deleteComment(data.id)" class="btn btn-dark mb-3">Delete</button>
+                        <div>
+                            <button v-on:click="editComment(data.id)" class="btn btn-dark mb-3 mx-2">Edit</button>
+                            <button v-on:click="deleteComment(data.id)" class="btn btn-dark mb-3">Delete</button>
+                        </div>
+
                     </div>
 
                 </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -69,49 +72,49 @@ export default {
             // console.log(data, "this is data")
         },
         async postNewComment() {
-                const userData = JSON.parse(localStorage.getItem("userData"));
-                // console.log(userData.id, "user id data show localStorage")
-                await fetch('https://dummyjson.com/comments/add', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            body: this.newComment,
-                            postId: this.dataComment[0].postId,
-                            userId: userData.id,
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(console.log);
-                this.newComment = ''
-            }
+            const userData = JSON.parse(localStorage.getItem("userData"));
+            // console.log(userData.id, "user id data show localStorage")
+            await fetch('https://dummyjson.com/comments/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    body: this.newComment,
+                    postId: this.dataComment[0].postId,
+                    userId: userData.id,
+                })
+            })
+                .then(res => res.json())
+                .then(console.log);
+            this.newComment = ''
+        }
 
-            ,
+        ,
         async editComment(id) {
             this.show = !this.show
             this.newUserDataId = id
             const newComments = await fetch('https://dummyjson.com/comments?limit=340&select=body,postId')
             const jsonComments = await newComments.json();
             console.log(jsonComments, "jsonComments jsonComments jsonComments jsonComments")
-            const data = jsonComments ? .comments.find((item) => item.id === id);
+            const data = jsonComments?.comments.find((item) => item.id === id);
             console.log(data, "this is data object")
-            this.editCommentInput = data ? .body
+            this.editCommentInput = data?.body
 
         },
 
         updateNewComment() {
             console.log(this.newUserDataId, "this is new user id")
             fetch(`https://dummyjson.com/comments/${this.newUserDataId}`, {
-                    method: 'PUT',
-                    /* or PATCH */
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        body: this.editCommentInput,
-                    })
+                method: 'PUT',
+                /* or PATCH */
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    body: this.editCommentInput,
                 })
+            })
                 .then(res => res.json())
                 .then(console.log);
 
@@ -122,8 +125,8 @@ export default {
             // let newDataComment = this.dataComment.splice(id, 1)
             // console.log(newDataComment, "return splice data")
             fetch(`https://dummyjson.com/comments/${id}`, {
-                    method: 'DELETE',
-                })
+                method: 'DELETE',
+            })
                 .then(res => res.json())
                 .then(console.log);
             // console.log(id, "delete id")
