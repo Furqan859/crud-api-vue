@@ -69,9 +69,9 @@ export default {
 
             } else {
                 localStorage.setItem('userData', JSON.stringify(data));
-                this.$router.push({
-                    name: 'ContentPage'
-                })
+                const userLoggedIn = true;
+                localStorage.setItem('authUser', JSON.stringify(userLoggedIn));
+                window.location.replace('/')
 
             }
 

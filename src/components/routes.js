@@ -3,12 +3,21 @@ import ContentPage from './ContentPage/ContentPage.vue'
 import Login from '../components/LoginPage/Login.vue'
 import Profile from '../components/profile/Profile.vue'
 
+
+
+const userAuth = JSON.parse(localStorage.getItem('authUser'));
+console.log(userAuth, "userAuth check")
+
+
 const routes = [
     
   {
     name:'ContentPage',
     path: '/',
-    component:ContentPage
+    component:ContentPage,
+    meta: {
+      needsAuth: true
+    }
 
   },
   {
@@ -32,9 +41,25 @@ const routes = [
   }
 ];
 
+
+
 const router = createRouter({
     history:createWebHistory(),
     routes
 });
+
+
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.needsAuth) {
+    if (userAuth) {
+      next();
+    } else {
+      next('/login')
+    }
+  } else {
+    next()
+  }
+})
 
 export default router;

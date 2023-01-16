@@ -1,12 +1,20 @@
 <template>
 <router-link to="/login" class="nav-a">
     <font-awesome-icon icon="right-from-bracket" />
-    <span class="fs-4 d-none d-xl-inline"> LogOut</span></router-link>
+    <span class="fs-4 d-none d-xl-inline" @click="logOut()" > LogOut</span></router-link>
 </template>
 
 <script>
 export default {
     name: 'LogOut',
+
+    methods:{
+        logOut(){
+            localStorage.removeItem('userData');
+            localStorage.removeItem('authUser');
+            window.location.replace('/login')
+        }
+    }
 
 }
 </script>
